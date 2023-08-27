@@ -1,18 +1,6 @@
 image: gitpod.Dockerfile
 checkoutLocation: gitpod-k3s
 tasks:
-  - name: prepare k3s
-    command: |
-      .gitpod/prepare-k3s.sh
-  - name: kernel dev environment
-    init: |
-      sudo apt update -y
-      sudo apt upgrade -y
-      sudo apt update -y
-      sudo apt install qemu qemu-system-x86 linux-image-generic libguestfs-tools sshpass netcat -y
-      .gitpod/prepare-rootfs.sh
-    command: |
-      .gitpod/qemu.sh
   - name: tailscaled
     command: |
       if [ -n "${TS_STATE_TAILSCALE_EXAMPLE}" ]; then
@@ -30,3 +18,11 @@ tasks:
         # store the tailscale state into gitpod user
         gp env TS_STATE_TAILSCALE_EXAMPLE="$(sudo cat /var/lib/tailscale/tailscaled.state)"
       fi
+  - name: prepare k3s
+    command: |
+      .gitpod/prepare-k3s.sh
+  - name: kernel dev environment
+    init: |
+      .gitpod/prepare-rootfs.sh
+    command: |
+      .gitpod/qemu.sh
